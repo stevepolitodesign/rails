@@ -205,6 +205,8 @@ class FormWithActsLikeFormTagTest < FormWithTest
   end
 
   def test_does_not_raise_if_sensitive_input_is_permitted
+    config[:filter_parameters] = [:password]
+
     form_with(method: :get, permit_sensitive_params: [:password]) do |f|
       concat f.password_field(:password)
     end
