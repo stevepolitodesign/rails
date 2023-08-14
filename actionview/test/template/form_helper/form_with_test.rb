@@ -183,6 +183,8 @@ class FormWithActsLikeFormTagTest < FormWithTest
   end
 
   def test_raises_error_if_form_contains_sensitive_inputs
+    config[:filter_parameters] = [:password]
+
     assert_raises(StandardError) do
       form_with(method: :get) do |f|
         concat f.password_field(:password)

@@ -754,7 +754,7 @@ module ActionView
       #   end
       def form_with(model: nil, scope: nil, url: nil, format: nil, **options, &block)
         options = { allow_method_names_outside_object: true, skip_default_ids: !form_with_generates_ids }.merge!(options)
-        sensitive_params = [:password]
+        sensitive_params = config.filter_parameters || []
         permitted_sensitive_params = options[:permit_sensitive_params] || []
 
         if model
