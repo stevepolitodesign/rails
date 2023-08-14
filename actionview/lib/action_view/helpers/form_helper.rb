@@ -782,7 +782,7 @@ module ActionView
               sensitive_param = sensitive_param.to_s.downcase
               return if permitted_sensitive_params.map(&:to_s).map(&:downcase).include?(sensitive_param)
 
-              raise StandardError if output.match?(/name\s*=\s*"#{sensitive_param}"/i)
+              raise StandardError if output.match?(/name="\s*#{sensitive_param}/i)
             end
           end
 
