@@ -754,6 +754,8 @@ module ActionView
       #   end
       def form_with(model: nil, scope: nil, url: nil, format: nil, **options, &block)
         options = { allow_method_names_outside_object: true, skip_default_ids: !form_with_generates_ids }.merge!(options)
+        sensitive_params = [:password]
+        permitted_sensitive_params = options[:permit_sensitive_params] || []
 
         if model
           if url != false
@@ -774,7 +776,15 @@ module ActionView
           options[:multipart] ||= builder.multipart?
 
           html_options = html_options_for_form_with(url, model, **options)
-          raise StandardError if html_options["method"]&.to_s&.downcase == "get" && output.match?(/name\s*=\s*"password"/i)
+
+          if html_options["method"]&.to_s&.downcase == "get"
+            sensitive_params.each do |sensitive_param|
+              sensitive_param = sensitive_param.to_s.downcase
+              return if permitted_sensitive_params.map(&:to_s).map(&:downcase).include?(sensitive_param)
+
+              raise StandardError if output.match?(/name\s*=\s*"#{sensitive_param}"/i)
+            end
+          end
 
           form_tag_with_body(html_options, output)
         else
