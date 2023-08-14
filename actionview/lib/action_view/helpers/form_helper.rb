@@ -774,6 +774,8 @@ module ActionView
           options[:multipart] ||= builder.multipart?
 
           html_options = html_options_for_form_with(url, model, **options)
+          raise StandardError if html_options["method"]&.to_s&.downcase == "get" && output.match?(/name\s*=\s*"password"/i)
+
           form_tag_with_body(html_options, output)
         else
           html_options = html_options_for_form_with(url, model, **options)
